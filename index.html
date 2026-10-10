@@ -12,7 +12,7 @@
     body {
       margin: 0;
       font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
-      background: linear-gradient(135deg, #0a0e27 0%, #1a1f3a 50%, #0d2438 100%);
+      background: #000;
       color: #e2e8f0;
       min-height: 100vh;
       display: flex;
@@ -22,86 +22,116 @@
       direction: rtl;
     }
 
-    /* خلفية متحركة */
-    .bg-orb {
+    /* الدائرة النارية الذهبية */
+    .fire-circle {
       position: fixed;
-      border-radius: 50%;
-      filter: blur(100px);
-      opacity: 0.4;
-      animation: float 15s infinite ease-in-out alternate;
-      z-index: 0;
-    }
-
-    .orb1 {
-      width: 400px;
-      height: 400px;
-      background: rgba(56, 189, 248, 0.6);
-      top: 5%;
-      left: 10%;
-      animation-duration: 18s;
-    }
-
-    .orb2 {
-      width: 500px;
-      height: 500px;
-      background: rgba(59, 130, 246, 0.5);
-      bottom: -10%;
-      right: 5%;
-      animation-duration: 20s;
-      animation-delay: 2s;
-    }
-
-    .orb3 {
-      width: 350px;
-      height: 350px;
-      background: rgba(14, 165, 233, 0.4);
+      width: 600px;
+      height: 600px;
       top: 50%;
       left: 50%;
-      animation-duration: 16s;
-      animation-delay: 4s;
+      transform: translate(-50%, -50%);
+      z-index: 1;
+      animation: rotate 25s linear infinite;
     }
 
-    .orb4 {
-      width: 300px;
-      height: 300px;
-      background: rgba(139, 92, 246, 0.35);
-      top: 30%;
-      right: 20%;
-      animation-duration: 22s;
-      animation-delay: 6s;
+    @keyframes rotate {
+      from { transform: translate(-50%, -50%) rotate(0deg); }
+      to { transform: translate(-50%, -50%) rotate(360deg); }
     }
 
-    @keyframes float {
-      0% { transform: translate(0, 0) scale(1); }
-      100% { transform: translate(40px, -40px) scale(1.1); }
-    }
-
-    /* نقاط متحركة */
-    .stars {
-      position: fixed;
-      width: 2px;
-      height: 2px;
-      background: rgba(148, 163, 184, 0.8);
+    .fire-circle::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: 
+        radial-gradient(circle at 30% 30%, rgba(255, 255, 0, 0.95), transparent 25%),
+        radial-gradient(circle at 70% 35%, rgba(255, 200, 0, 0.9), transparent 20%),
+        radial-gradient(circle at 50% 50%, rgba(255, 150, 0, 0.85), transparent 30%),
+        radial-gradient(circle at 60% 70%, rgba(255, 100, 0, 0.8), transparent 25%),
+        radial-gradient(circle at 40% 65%, rgba(255, 180, 0, 0.75), transparent 22%);
       border-radius: 50%;
-      animation: twinkle 3s infinite;
+      filter: drop-shadow(0 0 40px rgba(255, 200, 0, 1)) 
+              drop-shadow(0 0 80px rgba(255, 150, 0, 0.8))
+              drop-shadow(0 0 120px rgba(255, 100, 0, 0.6));
     }
 
-    @keyframes twinkle {
-      0%, 100% { opacity: 0.3; }
+    /* خطوط نارية */
+    .fire-line {
+      position: absolute;
+      background: linear-gradient(90deg, rgba(255, 255, 0, 0.8), rgba(255, 150, 0, 0.4), transparent);
+      animation: shootFlare 2s ease-in-out infinite;
+    }
+
+    .line1 {
+      width: 120px;
+      height: 4px;
+      top: 30%;
+      left: -50px;
+      animation-delay: 0s;
+      transform-origin: right center;
+    }
+
+    .line2 {
+      width: 150px;
+      height: 3px;
+      top: 20%;
+      right: -60px;
+      animation-delay: 0.5s;
+      transform-origin: left center;
+    }
+
+    .line3 {
+      width: 130px;
+      height: 4px;
+      bottom: 25%;
+      left: -40px;
+      animation-delay: 1s;
+      transform-origin: right center;
+    }
+
+    .line4 {
+      width: 140px;
+      height: 3px;
+      bottom: 35%;
+      right: -50px;
+      animation-delay: 1.5s;
+      transform-origin: left center;
+    }
+
+    @keyframes shootFlare {
+      0%, 100% { opacity: 0; }
       50% { opacity: 1; }
+    }
+
+    /* نقاط الضوء */
+    .spark {
+      position: absolute;
+      width: 3px;
+      height: 3px;
+      background: #ffff00;
+      border-radius: 50%;
+      box-shadow: 0 0 8px #ffff00;
+      animation: sparkFloat 3s ease-in-out infinite;
+    }
+
+    @keyframes sparkFloat {
+      0% { opacity: 0; transform: translate(0, 0) scale(1); }
+      50% { opacity: 1; }
+      100% { opacity: 0; transform: translate(var(--tx), var(--ty)) scale(0.5); }
     }
 
     .app {
       position: relative;
       width: min(1000px, 95vw);
       height: 90vh;
-      background: rgba(10, 14, 39, 0.8);
-      border: 1.5px solid rgba(148, 163, 184, 0.2);
+      background: rgba(10, 14, 39, 0.92);
+      border: 1.5px solid rgba(255, 200, 0, 0.25);
       border-radius: 32px;
       box-shadow:
-        0 0 0 1px rgba(56, 189, 248, 0.15),
-        0 30px 80px rgba(0, 0, 0, 0.7),
-        0 0 60px rgba(56, 189, 248, 0.2);
+        0 0 0 1px rgba(255, 200, 0, 0.15),
+        0 30px 80px rgba(0, 0, 0, 0.9),
+        0 0 60px rgba(255, 200, 0, 0.2),
+        inset 0 0 40px rgba(255, 200, 0, 0.05);
       backdrop-filter: blur(20px);
       overflow: hidden;
       display: flex;
@@ -114,8 +144,8 @@
       align-items: center;
       justify-content: space-between;
       padding: 28px 32px;
-      border-bottom: 1px solid rgba(148, 163, 184, 0.15);
-      background: rgba(15, 23, 42, 0.6);
+      border-bottom: 1px solid rgba(255, 200, 0, 0.15);
+      background: rgba(15, 23, 42, 0.75);
     }
 
     .brand {
@@ -125,37 +155,46 @@
       font-weight: 700;
       letter-spacing: 2px;
       font-size: 24px;
+      color: #ffc800;
+      text-shadow: 0 0 20px rgba(255, 200, 0, 0.6);
     }
 
     .logo {
       width: 18px;
       height: 18px;
       border-radius: 50%;
-      background: linear-gradient(135deg, #38bdf8, #67e8f9);
-      box-shadow: 0 0 25px rgba(56, 189, 248, 0.9), 0 0 50px rgba(56, 189, 248, 0.5);
+      background: linear-gradient(135deg, #ffc800, #ffb700);
+      box-shadow: 0 0 25px rgba(255, 200, 0, 1), 0 0 50px rgba(255, 200, 0, 0.6);
       position: relative;
       animation: pulse 2s infinite;
     }
 
     @keyframes pulse {
-      0%, 100% { box-shadow: 0 0 25px rgba(56, 189, 248, 0.9), 0 0 50px rgba(56, 189, 248, 0.5); }
-      50% { box-shadow: 0 0 35px rgba(56, 189, 248, 1), 0 0 70px rgba(56, 189, 248, 0.7); }
+      0%, 100% { 
+        box-shadow: 0 0 25px rgba(255, 200, 0, 1), 0 0 50px rgba(255, 200, 0, 0.6);
+        transform: scale(1);
+      }
+      50% { 
+        box-shadow: 0 0 35px rgba(255, 200, 0, 1), 0 0 70px rgba(255, 200, 0, 0.8);
+        transform: scale(1.1);
+      }
     }
 
     .status {
       display: flex;
       align-items: center;
       gap: 10px;
-      color: #7dd3fc;
+      color: #ffc800;
       font-size: 14px;
+      text-shadow: 0 0 10px rgba(255, 200, 0, 0.5);
     }
 
     .dot {
       width: 10px;
       height: 10px;
       border-radius: 50%;
-      background: #22c55e;
-      box-shadow: 0 0 15px #22c55e;
+      background: #ff6b00;
+      box-shadow: 0 0 15px #ff6b00;
       animation: blink 1.5s infinite;
     }
 
@@ -172,7 +211,7 @@
       flex-direction: column;
       gap: 18px;
       scrollbar-width: thin;
-      scrollbar-color: rgba(148, 163, 184, 0.3) transparent;
+      scrollbar-color: rgba(255, 200, 0, 0.3) transparent;
     }
 
     .message {
@@ -205,15 +244,16 @@
       border-radius: 20px;
       line-height: 1.7;
       font-size: 16px;
-      box-shadow: 0 12px 35px rgba(15, 23, 42, 0.3);
+      box-shadow: 0 12px 35px rgba(15, 23, 42, 0.5);
       word-wrap: break-word;
     }
 
     .message.assistant .bubble {
-      background: linear-gradient(135deg, rgba(56, 189, 248, 0.18), rgba(59, 130, 246, 0.15));
-      border: 1px solid rgba(103, 232, 249, 0.25);
-      color: #dbeafe;
+      background: linear-gradient(135deg, rgba(255, 200, 0, 0.15), rgba(255, 150, 0, 0.12));
+      border: 1px solid rgba(255, 200, 0, 0.3);
+      color: #fff9e6;
       border-bottom-right-radius: 8px;
+      box-shadow: 0 0 20px rgba(255, 200, 0, 0.15);
     }
 
     .message.user .bubble {
@@ -224,9 +264,9 @@
     }
 
     .input-area {
-      border-top: 1px solid rgba(148, 163, 184, 0.15);
+      border-top: 1px solid rgba(255, 200, 0, 0.15);
       padding: 24px 28px;
-      background: rgba(15, 23, 42, 0.65);
+      background: rgba(15, 23, 42, 0.8);
     }
 
     .input-row {
@@ -234,15 +274,15 @@
       align-items: center;
       gap: 12px;
       background: rgba(15, 23, 42, 0.95);
-      border: 1.5px solid rgba(148, 163, 184, 0.2);
+      border: 1.5px solid rgba(255, 200, 0, 0.25);
       border-radius: 22px;
       padding: 12px 16px;
       transition: 0.3s ease;
     }
 
     .input-row:focus-within {
-      border-color: rgba(56, 189, 248, 0.4);
-      box-shadow: 0 0 20px rgba(56, 189, 248, 0.15);
+      border-color: rgba(255, 200, 0, 0.5);
+      box-shadow: 0 0 20px rgba(255, 200, 0, 0.2);
     }
 
     input {
@@ -262,10 +302,10 @@
     .mic-btn {
       width: 48px;
       height: 48px;
-      border: 2px solid rgba(56, 189, 248, 0.4);
+      border: 2px solid rgba(255, 200, 0, 0.4);
       border-radius: 14px;
-      background: rgba(56, 189, 248, 0.12);
-      color: #38bdf8;
+      background: rgba(255, 200, 0, 0.12);
+      color: #ffc800;
       font-size: 22px;
       cursor: pointer;
       transition: 0.3s ease;
@@ -275,8 +315,8 @@
     }
 
     .mic-btn:hover {
-      background: rgba(56, 189, 248, 0.2);
-      box-shadow: 0 0 15px rgba(56, 189, 248, 0.25);
+      background: rgba(255, 200, 0, 0.2);
+      box-shadow: 0 0 15px rgba(255, 200, 0, 0.3);
     }
 
     .mic-btn.listening {
@@ -297,37 +337,32 @@
       height: 48px;
       border: none;
       border-radius: 14px;
-      background: linear-gradient(135deg, #38bdf8, #2563eb);
-      color: white;
+      background: linear-gradient(135deg, #ffc800, #ff9800);
+      color: #000;
       font-size: 22px;
       cursor: pointer;
-      box-shadow: 0 8px 25px rgba(37, 99, 235, 0.5);
+      box-shadow: 0 8px 25px rgba(255, 200, 0, 0.5);
       transition: 0.25s ease;
       display: flex;
       align-items: center;
       justify-content: center;
+      font-weight: bold;
     }
 
     .send-btn:hover {
       transform: translateY(-2px) scale(1.05);
-      box-shadow: 0 12px 35px rgba(37, 99, 235, 0.6);
+      box-shadow: 0 12px 35px rgba(255, 200, 0, 0.6);
     }
 
     .send-btn:active {
       transform: translateY(0) scale(0.98);
     }
 
-    .welcome {
-      text-align: center;
-      padding: 40px;
-    }
-
     .welcome-title {
       font-size: 32px;
       font-weight: 700;
-      background: linear-gradient(135deg, #38bdf8, #67e8f9);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
+      color: #ffc800;
+      text-shadow: 0 0 20px rgba(255, 200, 0, 0.6);
       margin-bottom: 12px;
     }
 
@@ -351,6 +386,11 @@
         font-size: 18px;
       }
 
+      .fire-circle {
+        width: 400px;
+        height: 400px;
+      }
+
       input {
         font-size: 14px;
       }
@@ -358,11 +398,17 @@
   </style>
 </head>
 <body>
-  <!-- خلفية متحركة -->
-  <div class="bg-orb orb1"></div>
-  <div class="bg-orb orb2"></div>
-  <div class="bg-orb orb3"></div>
-  <div class="bg-orb orb4"></div>
+  <!-- الدائرة النارية الذهبية -->
+  <div class="fire-circle">
+    <div class="line1"></div>
+    <div class="line2"></div>
+    <div class="line3"></div>
+    <div class="line4"></div>
+    <div class="spark" style="top: 20%; left: 15%; --tx: 50px; --ty: -80px; animation-delay: 0s;"></div>
+    <div class="spark" style="top: 35%; right: 20%; --tx: -60px; --ty: -60px; animation-delay: 0.3s;"></div>
+    <div class="spark" style="bottom: 30%; left: 10%; --tx: 70px; --ty: 50px; animation-delay: 0.6s;"></div>
+    <div class="spark" style="bottom: 20%; right: 15%; --tx: -80px; --ty: 40px; animation-delay: 0.9s;"></div>
+  </div>
 
   <!-- التطبيق الرئيسي -->
   <div class="app">
@@ -449,49 +495,94 @@
       };
     }
 
+    // دالة حساب العمليات الحسابية
+    function evaluateMath(expr) {
+      try {
+        // إزالة المسافات
+        expr = expr.replace(/\s+/g, '');
+        
+        // التحقق من أن التعبير يحتوي على أرقام وعمليات فقط
+        if (!/^[\d+\-*/.()]+$/.test(expr)) {
+          return null;
+        }
+
+        // حساب النتيجة بشكل آمن
+        const result = Function('"use strict"; return (' + expr + ')')();
+        
+        // التحقق من أن النتيجة رقم صحيح
+        if (typeof result === 'number' && isFinite(result)) {
+          return result;
+        }
+        return null;
+      } catch {
+        return null;
+      }
+    }
+
     // الإجابات الذكية
-    const responses = {
-      greeting: [
-        "مرحباً! كيف يمكنني مساعدتك اليوم؟",
-        "أهلاً وسهلاً! ما الذي تحتاج؟",
-        "أنا هنا لخدمتك. ما أخبارك؟"
-      ],
-      project: [
-        "هذا مشروع JARVIS، مساعد ذكي بواجهة حديثة وخلفية رائعة مع تقنية التحدث والاستماع!",
-        "مشروع JARVIS يهدف لتقديم تجربة تفاعلية مميزة مع الذكاء الاصطناعي."
-      ],
-      help: [
-        "أستطيع مساعدتك في الإجابة عن الأسئلة، الشرح، الكتابة، والتطوير.",
-        "أنا هنا للمساعدة! يمكنك سؤالي عن أي شيء."
-      ],
-      thanks: [
-        "بكل سرور! أنا هنا دائماً لمساعدتك.",
-        "شكراً لك، أتمنى أن أكون قد ساعدتك."
-      ],
-      default: [
+    function getResponse(text) {
+      const lower = text.toLowerCase().trim();
+
+      // التحقق من العمليات الحسابية
+      const mathMatch = text.match(/(\d+[\s]*[+\-*\/][\s]*\d+[\s]*[+\-*\/]?[\s]*\d*)/i);
+      if (mathMatch) {
+        const mathExpr = mathMatch[0].replace(/\s+/g, '');
+        const result = evaluateMath(mathExpr);
+        if (result !== null) {
+          return `النتيجة: ${mathExpr} = ${result}`;
+        }
+      }
+
+      // الترحيبات
+      if (/مرحبا|مرحبة|hi|hello|السلام|اهلا|اهلاً/.test(lower)) {
+        const greetings = [
+          "مرحباً! كيف يمكنني مساعدتك اليوم؟",
+          "أهلاً وسهلاً! ما الذي تحتاج؟",
+          "أنا هنا لخدمتك. ما أخبارك؟",
+          "تشرفت بحضورك! كيف أساعدك؟"
+        ];
+        return greetings[Math.floor(Math.random() * greetings.length)];
+      }
+
+      // الأسئلة عن المشروع
+      if (/مشروع|project|jarvis|ما هذا/.test(lower)) {
+        const projects = [
+          "هذا مشروع JARVIS، مساعد ذكي بواجهة حديثة وخلفية نارية رائعة مع تقنية التحدث والاستماع!",
+          "مشروع JARVIS يهدف لتقديم تجربة تفاعلية مميزة مع الذكاء الاصطناعي والعمليات الحسابية.",
+          "JARVIS هو مساعدك الذكي الشخصي، يستطيع الرد على أسئلتك وحل العمليات الحسابية."
+        ];
+        return projects[Math.floor(Math.random() * projects.length)];
+      }
+
+      // الأسئلة عن المساعدة
+      if (/مساعد|help|ساعد|استطيع|تستطيع|تفعل/.test(lower)) {
+        const helps = [
+          "أستطيع مساعدتك في الإجابة عن الأسئلة، الشرح، الكتابة، والعمليات الحسابية!",
+          "أنا هنا للمساعدة! يمكنك سؤالي عن أي شيء وحتى حل المسائل الحسابية.",
+          "أستطيع فعل الكثير: الرد على الأسئلة، حل العمليات الرياضية، والشرح المفصل."
+        ];
+        return helps[Math.floor(Math.random() * helps.length)];
+      }
+
+      // الشكر
+      if (/شكر|thanks|شكرا|تشكر/.test(lower)) {
+        const thanks = [
+          "بكل سرور! أنا هنا دائماً لمساعدتك.",
+          "شكراً لك، أتمنى أن أكون قد ساعدتك.",
+          "أنا سعيد لمساعدتك! أخبرني إن احتجت أي شيء آخر."
+        ];
+        return thanks[Math.floor(Math.random() * thanks.length)];
+      }
+
+      // الإجابات الافتراضية
+      const defaults = [
         "رائع! أستطيع مساعدتك بهذا. هل تريد المزيد من المعلومات؟",
         "فكرة جيدة! دعنا نعمل عليها معاً.",
-        "حسناً، أفهمك. كيف يمكنني المساعدة أكثر؟"
-      ]
-    };
-
-    function getResponse(text) {
-      const lower = text.toLowerCase();
-
-      if (/مرحبا|مرحبة|hi|hello|السلام/.test(lower)) {
-        return responses.greeting[Math.floor(Math.random() * responses.greeting.length)];
-      }
-      if (/مشروع|project|jarvis/.test(lower)) {
-        return responses.project[Math.floor(Math.random() * responses.project.length)];
-      }
-      if (/مساعد|help|ساعد|استطيع/.test(lower)) {
-        return responses.help[Math.floor(Math.random() * responses.help.length)];
-      }
-      if (/شكر|thanks|شكرا/.test(lower)) {
-        return responses.thanks[Math.floor(Math.random() * responses.thanks.length)];
-      }
-
-      return responses.default[Math.floor(Math.random() * responses.default.length)];
+        "حسناً، أفهمك. كيف يمكنني المساعدة أكثر؟",
+        "هذا سؤال ذكي! دعني أفكر به.",
+        "نعم، أنا أفهم ما تقصد. هل تريد توضيح أكثر؟"
+      ];
+      return defaults[Math.floor(Math.random() * defaults.length)];
     }
 
     function speak(text) {
