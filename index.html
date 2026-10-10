@@ -1,0 +1,566 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>JARVIS - المساعد الذكي</title>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #0a0e27 0%, #1a1f3a 50%, #0d2438 100%);
+      color: #e2e8f0;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      direction: rtl;
+    }
+
+    /* خلفية متحركة */
+    .bg-orb {
+      position: fixed;
+      border-radius: 50%;
+      filter: blur(100px);
+      opacity: 0.4;
+      animation: float 15s infinite ease-in-out alternate;
+      z-index: 0;
+    }
+
+    .orb1 {
+      width: 400px;
+      height: 400px;
+      background: rgba(56, 189, 248, 0.6);
+      top: 5%;
+      left: 10%;
+      animation-duration: 18s;
+    }
+
+    .orb2 {
+      width: 500px;
+      height: 500px;
+      background: rgba(59, 130, 246, 0.5);
+      bottom: -10%;
+      right: 5%;
+      animation-duration: 20s;
+      animation-delay: 2s;
+    }
+
+    .orb3 {
+      width: 350px;
+      height: 350px;
+      background: rgba(14, 165, 233, 0.4);
+      top: 50%;
+      left: 50%;
+      animation-duration: 16s;
+      animation-delay: 4s;
+    }
+
+    .orb4 {
+      width: 300px;
+      height: 300px;
+      background: rgba(139, 92, 246, 0.35);
+      top: 30%;
+      right: 20%;
+      animation-duration: 22s;
+      animation-delay: 6s;
+    }
+
+    @keyframes float {
+      0% { transform: translate(0, 0) scale(1); }
+      100% { transform: translate(40px, -40px) scale(1.1); }
+    }
+
+    /* نقاط متحركة */
+    .stars {
+      position: fixed;
+      width: 2px;
+      height: 2px;
+      background: rgba(148, 163, 184, 0.8);
+      border-radius: 50%;
+      animation: twinkle 3s infinite;
+    }
+
+    @keyframes twinkle {
+      0%, 100% { opacity: 0.3; }
+      50% { opacity: 1; }
+    }
+
+    .app {
+      position: relative;
+      width: min(1000px, 95vw);
+      height: 90vh;
+      background: rgba(10, 14, 39, 0.8);
+      border: 1.5px solid rgba(148, 163, 184, 0.2);
+      border-radius: 32px;
+      box-shadow:
+        0 0 0 1px rgba(56, 189, 248, 0.15),
+        0 30px 80px rgba(0, 0, 0, 0.7),
+        0 0 60px rgba(56, 189, 248, 0.2);
+      backdrop-filter: blur(20px);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      z-index: 10;
+    }
+
+    .header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 28px 32px;
+      border-bottom: 1px solid rgba(148, 163, 184, 0.15);
+      background: rgba(15, 23, 42, 0.6);
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      font-weight: 700;
+      letter-spacing: 2px;
+      font-size: 24px;
+    }
+
+    .logo {
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #38bdf8, #67e8f9);
+      box-shadow: 0 0 25px rgba(56, 189, 248, 0.9), 0 0 50px rgba(56, 189, 248, 0.5);
+      position: relative;
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { box-shadow: 0 0 25px rgba(56, 189, 248, 0.9), 0 0 50px rgba(56, 189, 248, 0.5); }
+      50% { box-shadow: 0 0 35px rgba(56, 189, 248, 1), 0 0 70px rgba(56, 189, 248, 0.7); }
+    }
+
+    .status {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      color: #7dd3fc;
+      font-size: 14px;
+    }
+
+    .dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: #22c55e;
+      box-shadow: 0 0 15px #22c55e;
+      animation: blink 1.5s infinite;
+    }
+
+    @keyframes blink {
+      from { opacity: 0.3; }
+      to { opacity: 1; }
+    }
+
+    .chat {
+      flex: 1;
+      overflow-y: auto;
+      padding: 32px 28px;
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+      scrollbar-width: thin;
+      scrollbar-color: rgba(148, 163, 184, 0.3) transparent;
+    }
+
+    .message {
+      display: flex;
+      animation: slideIn 0.4s ease;
+    }
+
+    @keyframes slideIn {
+      from { 
+        opacity: 0; 
+        transform: translateY(20px);
+      }
+      to { 
+        opacity: 1; 
+        transform: translateY(0);
+      }
+    }
+
+    .message.user {
+      justify-content: flex-start;
+    }
+
+    .message.assistant {
+      justify-content: flex-end;
+    }
+
+    .bubble {
+      max-width: 70%;
+      padding: 16px 20px;
+      border-radius: 20px;
+      line-height: 1.7;
+      font-size: 16px;
+      box-shadow: 0 12px 35px rgba(15, 23, 42, 0.3);
+      word-wrap: break-word;
+    }
+
+    .message.assistant .bubble {
+      background: linear-gradient(135deg, rgba(56, 189, 248, 0.18), rgba(59, 130, 246, 0.15));
+      border: 1px solid rgba(103, 232, 249, 0.25);
+      color: #dbeafe;
+      border-bottom-right-radius: 8px;
+    }
+
+    .message.user .bubble {
+      background: linear-gradient(135deg, rgba(139, 92, 246, 0.25), rgba(168, 85, 247, 0.2));
+      border: 1px solid rgba(168, 85, 247, 0.3);
+      color: #f0f9ff;
+      border-bottom-left-radius: 8px;
+    }
+
+    .input-area {
+      border-top: 1px solid rgba(148, 163, 184, 0.15);
+      padding: 24px 28px;
+      background: rgba(15, 23, 42, 0.65);
+    }
+
+    .input-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      background: rgba(15, 23, 42, 0.95);
+      border: 1.5px solid rgba(148, 163, 184, 0.2);
+      border-radius: 22px;
+      padding: 12px 16px;
+      transition: 0.3s ease;
+    }
+
+    .input-row:focus-within {
+      border-color: rgba(56, 189, 248, 0.4);
+      box-shadow: 0 0 20px rgba(56, 189, 248, 0.15);
+    }
+
+    input {
+      flex: 1;
+      background: transparent;
+      border: none;
+      outline: none;
+      color: #e2e8f0;
+      font-size: 16px;
+      padding: 8px 12px;
+    }
+
+    input::placeholder {
+      color: rgba(148, 163, 184, 0.6);
+    }
+
+    .mic-btn {
+      width: 48px;
+      height: 48px;
+      border: 2px solid rgba(56, 189, 248, 0.4);
+      border-radius: 14px;
+      background: rgba(56, 189, 248, 0.12);
+      color: #38bdf8;
+      font-size: 22px;
+      cursor: pointer;
+      transition: 0.3s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .mic-btn:hover {
+      background: rgba(56, 189, 248, 0.2);
+      box-shadow: 0 0 15px rgba(56, 189, 248, 0.25);
+    }
+
+    .mic-btn.listening {
+      animation: micPulse 1s infinite;
+      background: rgba(239, 68, 68, 0.2);
+      border-color: rgba(239, 68, 68, 0.6);
+      color: #ef4444;
+      box-shadow: 0 0 20px rgba(239, 68, 68, 0.35);
+    }
+
+    @keyframes micPulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.08); }
+    }
+
+    .send-btn {
+      width: 48px;
+      height: 48px;
+      border: none;
+      border-radius: 14px;
+      background: linear-gradient(135deg, #38bdf8, #2563eb);
+      color: white;
+      font-size: 22px;
+      cursor: pointer;
+      box-shadow: 0 8px 25px rgba(37, 99, 235, 0.5);
+      transition: 0.25s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .send-btn:hover {
+      transform: translateY(-2px) scale(1.05);
+      box-shadow: 0 12px 35px rgba(37, 99, 235, 0.6);
+    }
+
+    .send-btn:active {
+      transform: translateY(0) scale(0.98);
+    }
+
+    .welcome {
+      text-align: center;
+      padding: 40px;
+    }
+
+    .welcome-title {
+      font-size: 32px;
+      font-weight: 700;
+      background: linear-gradient(135deg, #38bdf8, #67e8f9);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 12px;
+    }
+
+    .welcome-text {
+      font-size: 18px;
+      color: #cbd5e1;
+      margin-bottom: 24px;
+    }
+
+    @media (max-width: 768px) {
+      .app {
+        border-radius: 24px;
+        height: 95vh;
+      }
+
+      .bubble {
+        max-width: 85%;
+      }
+
+      .brand {
+        font-size: 18px;
+      }
+
+      input {
+        font-size: 14px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- خلفية متحركة -->
+  <div class="bg-orb orb1"></div>
+  <div class="bg-orb orb2"></div>
+  <div class="bg-orb orb3"></div>
+  <div class="bg-orb orb4"></div>
+
+  <!-- التطبيق الرئيسي -->
+  <div class="app">
+    <!-- رأس الصفحة -->
+    <div class="header">
+      <div class="brand">
+        <div class="logo"></div>
+        <span>JARVIS</span>
+      </div>
+      <div class="status">
+        <span class="dot"></span>
+        <span>متصل</span>
+      </div>
+    </div>
+
+    <!-- منطقة الحوار -->
+    <div class="chat" id="chat">
+      <div class="message assistant">
+        <div class="bubble">
+          <div class="welcome-title">مرحباً بك!</div>
+          <div class="welcome-text">أنا JARVIS، جاهز لمساعدتك. اكتب سؤالك أو استخدم المايك 🎤</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- منطقة الإدخال -->
+    <div class="input-area">
+      <div class="input-row">
+        <input 
+          id="userInput" 
+          type="text" 
+          placeholder="اكتب سؤالك هنا..."
+          autocomplete="off"
+        />
+        <button class="mic-btn" id="micBtn" title="اضغط للتحدث">🎤</button>
+        <button class="send-btn" id="sendBtn" title="إرسال">➤</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const chat = document.getElementById("chat");
+    const userInput = document.getElementById("userInput");
+    const sendBtn = document.getElementById("sendBtn");
+    const micBtn = document.getElementById("micBtn");
+
+    let recognition;
+    let isListening = false;
+
+    // إعداد التعرف على الكلام
+    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    if (SpeechRecognition) {
+      recognition = new SpeechRecognition();
+      recognition.lang = "ar-SA";
+      recognition.continuous = false;
+      recognition.interimResults = false;
+
+      recognition.onstart = () => {
+        isListening = true;
+        micBtn.classList.add("listening");
+        micBtn.textContent = "🔴";
+      };
+
+      recognition.onresult = (event) => {
+        let transcript = "";
+        for (let i = event.resultIndex; i < event.results.length; i++) {
+          transcript += event.results[i][0].transcript;
+        }
+        if (transcript) {
+          userInput.value = transcript;
+          sendMessage();
+        }
+      };
+
+      recognition.onend = () => {
+        isListening = false;
+        micBtn.classList.remove("listening");
+        micBtn.textContent = "🎤";
+      };
+
+      recognition.onerror = () => {
+        micBtn.classList.remove("listening");
+        micBtn.textContent = "🎤";
+      };
+    }
+
+    // الإجابات الذكية
+    const responses = {
+      greeting: [
+        "مرحباً! كيف يمكنني مساعدتك اليوم؟",
+        "أهلاً وسهلاً! ما الذي تحتاج؟",
+        "أنا هنا لخدمتك. ما أخبارك؟"
+      ],
+      project: [
+        "هذا مشروع JARVIS، مساعد ذكي بواجهة حديثة وخلفية رائعة مع تقنية التحدث والاستماع!",
+        "مشروع JARVIS يهدف لتقديم تجربة تفاعلية مميزة مع الذكاء الاصطناعي."
+      ],
+      help: [
+        "أستطيع مساعدتك في الإجابة عن الأسئلة، الشرح، الكتابة، والتطوير.",
+        "أنا هنا للمساعدة! يمكنك سؤالي عن أي شيء."
+      ],
+      thanks: [
+        "بكل سرور! أنا هنا دائماً لمساعدتك.",
+        "شكراً لك، أتمنى أن أكون قد ساعدتك."
+      ],
+      default: [
+        "رائع! أستطيع مساعدتك بهذا. هل تريد المزيد من المعلومات؟",
+        "فكرة جيدة! دعنا نعمل عليها معاً.",
+        "حسناً، أفهمك. كيف يمكنني المساعدة أكثر؟"
+      ]
+    };
+
+    function getResponse(text) {
+      const lower = text.toLowerCase();
+
+      if (/مرحبا|مرحبة|hi|hello|السلام/.test(lower)) {
+        return responses.greeting[Math.floor(Math.random() * responses.greeting.length)];
+      }
+      if (/مشروع|project|jarvis/.test(lower)) {
+        return responses.project[Math.floor(Math.random() * responses.project.length)];
+      }
+      if (/مساعد|help|ساعد|استطيع/.test(lower)) {
+        return responses.help[Math.floor(Math.random() * responses.help.length)];
+      }
+      if (/شكر|thanks|شكرا/.test(lower)) {
+        return responses.thanks[Math.floor(Math.random() * responses.thanks.length)];
+      }
+
+      return responses.default[Math.floor(Math.random() * responses.default.length)];
+    }
+
+    function speak(text) {
+      if (!("speechSynthesis" in window)) return;
+
+      const utterance = new SpeechSynthesisUtterance(text);
+      utterance.lang = "ar-SA";
+      utterance.rate = 1;
+      utterance.pitch = 1;
+      utterance.volume = 1;
+
+      window.speechSynthesis.cancel();
+      window.speechSynthesis.speak(utterance);
+    }
+
+    function addMessage(text, sender = "assistant") {
+      const message = document.createElement("div");
+      message.className = `message ${sender}`;
+
+      const bubble = document.createElement("div");
+      bubble.className = "bubble";
+      bubble.textContent = text;
+
+      message.appendChild(bubble);
+      chat.appendChild(message);
+      chat.scrollTop = chat.scrollHeight;
+
+      if (sender === "assistant") {
+        setTimeout(() => speak(text), 300);
+      }
+    }
+
+    function sendMessage() {
+      const value = userInput.value.trim();
+      if (!value) return;
+
+      addMessage(value, "user");
+      userInput.value = "";
+
+      const response = getResponse(value);
+      setTimeout(() => addMessage(response, "assistant"), 500);
+    }
+
+    // أحداث الإرسال
+    sendBtn.addEventListener("click", sendMessage);
+    userInput.addEventListener("keypress", (e) => {
+      if (e.key === "Enter") sendMessage();
+    });
+
+    // أحداث المايك
+    if (recognition) {
+      micBtn.addEventListener("click", () => {
+        if (isListening) {
+          recognition.stop();
+        } else {
+          userInput.value = "";
+          recognition.start();
+        }
+      });
+    } else {
+      micBtn.disabled = true;
+      micBtn.style.opacity = "0.5";
+      micBtn.title = "المايك غير مدعوم في متصفحك";
+    }
+
+    // رسالة ترحيب بعد 1 ثانية
+    setTimeout(() => {
+      speak("مرحباً بك في JARVIS. أنا جاهز لمساعدتك!");
+    }, 1000);
+  </script>
+</body>
+</html>
